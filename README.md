@@ -73,7 +73,7 @@ cat /mnt/project-dev/test.txt
 echo "Hello from Prod EC2" > /mnt/project-staging/test.txt
 
 # Read test file from another staging EC2
-cat /mnt/project-prod/test.txt
+cat /mnt/project-staging/test.txt
 ```
 
 Step 8: Notes & Best Practices
