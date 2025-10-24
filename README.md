@@ -1,6 +1,6 @@
-# Multi-EC2 EFS Setup for Project1 (Dev) & Project2 (Prod)
+# Multi-EC2 EFS Setup for Project1 (Dev) & Project2 (staging)
 
-This project demonstrates how to mount a **single AWS EFS (Elastic File System)** across **multiple EC2 instances** for two different environments: Project1 (Development) and Project2 (Production). Each project uses a separate directory in the same EFS file system to ensure isolation and proper permissions.
+This project demonstrates how to mount a **single AWS EFS (Elastic File System)** across **multiple EC2 instances** for two different environments: Project1 (Development) and Project2 (staging). Each project uses a separate directory in the same EFS file system to ensure isolation and proper permissions.
 
 EFS directories and mount points:
 
