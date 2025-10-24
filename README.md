@@ -9,6 +9,9 @@ EFS directories and mount points:
 | `/project-dev`      | Project1 / Development (Dev)  | `/mnt/project-dev`  |
 | `/project-staging`     | Project2 / staging (Stag)  | `/mnt/project-staging` |
 
+
+
+
 ---
 
 ## Step 1: Install NFS Client on EC2 ubuntu
@@ -17,8 +20,29 @@ EFS directories and mount points:
 sudo apt-get update -y
 sudo apt-get install -y nfs-common
 ```
-----
-## Step 2: Create Mount Points
+
+---
+## Step 2: Create directories in EFS
+
+Mount EFS temporarily on any EC2 (or use the EFS console):
+```bash
+sudo mkdir -p /mnt/efs-temp
+sudo mount -t nfs4 -o nfsvers=4.1 fs-0b9bb01540dc6fc3a.efs.ap-south-1.amazonaws.com:/ /mnt/efs-temp
+
+sudo mkdir -p /mnt/efs-temp/project-dev
+sudo mkdir -p /mnt/efs-temp/project-staging
+
+sudo umount /mnt/efs-temp
+```
+---
+## Now your EFS has:
+```bash
+/project-dev
+/project-staging
+```
+
+
+## Step 3: Create Mount Points
 ## Create local directories on EC2 to mount the EFS directories:
 
 ``` bash
@@ -27,7 +51,7 @@ sudo mkdir -p /mnt/project-staging
 ```
 
 -----
-## Step 3: Mount EFS Directories
+## Step 4: Mount EFS Directories
 ## Mount the EFS directories to the local mount points:
 ```bash
 sudo mount -t nfs4 -o nfsvers=4.1 fs-0b9bb01540dc6fc3a.efs.ap-south-1.amazonaws.com:/project-dev /mnt/project-dev
@@ -38,7 +62,7 @@ sudo mount -t nfs4 -o nfsvers=4.1 fs-0b9bb01540dc6fc3a.efs.ap-south-1.amazonaws.
 ```bash
 df -h | grep efs
 ```
-## Step 4: Set Permissions
+## Step 5: Set Permissions
 ## Set ownership and permissions so users can read/write to both directories:
 ```bash
 sudo chown -R ubuntu:ubuntu /mnt/project-dev
@@ -47,7 +71,7 @@ sudo chown -R ubuntu:ubuntu /mnt/project-staging
 sudo chmod -R 775 /mnt/project-staging
 
 ```
-## Step 5: Configure Auto-Mount on Reboot
+## Step 6: Configure Auto-Mount on Reboot
 ## Add the following lines to /etc/fstab to mount EFS automatically after reboot:
 
 ``` bash
@@ -59,7 +83,7 @@ fs-0b9bb01540dc6fc3a.efs.ap-south-1.amazonaws.com:/project-prod /mnt/project-stg
 ``` bash
 sudo mount -a
 ```
-## Step 6: Verify Access Across EC2 Instances
+## Step 7: Verify Access Across EC2 Instances
 
 ## Test that files written from one EC2 are visible on another EC2:
 ```bash
@@ -70,7 +94,7 @@ echo "Hello from Dev EC2" > /mnt/project-dev/test.txt
 cat /mnt/project-dev/test.txt
 
 # Write test file for staging environment
-echo "Hello from Prod EC2" > /mnt/project-staging/test.txt
+echo "Hello from staging EC2" > /mnt/project-staging/test.txt
 
 # Read test file from another staging EC2
 cat /mnt/project-staging/test.txt
@@ -87,3 +111,6 @@ Test file sharing across multiple EC2 instances.
 For multiple users, create a shared group with write permissions.
 
 Consider a startup script to automatically mount EFS on new EC2 instances.
+
+
+## you guys use also access point ** Using EFS Access Points (better permissions)
